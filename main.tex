@@ -1,0 +1,280 @@
+\documentclass{beamer}
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{serif}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+  
+} 
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsthm} % Added
+\usepackage[mathscr]{eucal}
+\usepackage{ragged2e}
+
+
+
+\title[Your Short Title]{Approximation in Stochastic Shceduling:\\The Power of LP-Based Priority Policies}
+\author{Rolf H. M\"{o}hring, Andreas S, Schulz and Marc Uetz}
+\institute{Slides: Geonsik Yu}
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Uncomment these lines for an automatically generated outline.
+%\begin{frame}{Outline}
+%  \tableofcontents
+%\end{frame}
+
+\section{Notations}
+\begin{frame}{Notations}
+    \begin{itemize}
+        \justifying
+        \item $\pmb{J=\{1,2,\dots,n\}}$ be a set of jobs that have to be nonpreemptively scheduled on $m$ identical parallel machines.
+        \vspace{0.2cm}
+        \item $\pmb{w_j}$ denotes each job $j$'s non-negative weight.
+        \vspace{0.2cm}        
+        \item $\pmb{C_j}$ denotes the completion time of job $j$.
+        \vspace{0.2cm}
+        \item $\pmb{r_j}$ denotes the release date of job $j$.
+        \vspace{0.2cm}
+        \item $\pmb{p=(p_1,\dots,p_n)}$ represents a vector of random variables where $\pmb{p_j}$ denotes the random variable for the processing time of job $j$ which is not known in advance.
+        \vspace{0.2cm}
+        \item Our goal is to minimize the total weighted completion time ($\pmb{\text{Minimize }\sum\limits_{j\in J}w_jC_j}$).
+    \end{itemize}
+\end{frame}
+
+\section{Notations}
+\begin{frame}{Notations: Policies($\Pi$)}
+    \begin{itemize}
+        \justifying
+        \item \textbf{\textit{Scheduling policy ($\Pi$)}}: An on-line(dynamic) allocation criteria of jobs to machines.
+        \vspace{0.6cm}
+        \item \textbf{\textit{Priority policy}}: If at any time $t$ a maximal number of available jobs is scheduled according to a given priority order on the set of jobs. E.g. LEPT, SEPT, and WSEPT.
+        \vspace{0.6cm}
+        \item \textbf{\textit{Job-based priority policy}}: When release dates or precedence constraints are additionally given, this policy enforces jobs with low priority to be scheduled only if all jobs with higher priority have already been started. 
+    \end{itemize}
+\end{frame}
+
+
+\section{Problem Definition}
+\begin{frame}{Problem Definition}
+    \begin{itemize}
+        \justifying
+        \item If $E[C_j^\Pi]$ denotes the expected completion time of job $j$ when scheduling according to policy $\Pi$, our problem can be formulated as follows:
+        \vspace{0.8cm}
+        \begin{equation}
+        \text{Minimize } \bigg\{\sum\limits_{j\in J} w_j E[\pmb{C}_j^\Pi] \bigg\vert \text{ } \Pi \text{ policy} \bigg\}    \end{equation}
+        \vspace{0.8cm}
+        \item Let $Z^{OPT}$ be the optimum value of (1).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Problem Definition}
+    \begin{itemize}
+        \justifying
+        \item (1) can be rewritten as follows:
+        \vspace{0.8cm}
+        \begin{equation}
+        \text{Minimize } \bigg\{\sum\limits_{j\in J} w_j E[C_j] \bigg\vert \text{ } C \in \mathscr{C} \bigg\}
+        \end{equation}
+        \vspace{0.8cm}
+        \item[] Where $\mathscr{C}:=\{(E[C_1^{\Pi}],E[C_2^{\Pi}],\dots,E[C_n^{\Pi}]) \vert \Pi \text{ policy} \} \in \mathbb{R}_{+}^n$ denotes the \textit{performance space}.
+    \end{itemize}
+\end{frame}
+
+\section{LP-Based Approximation}
+\begin{frame}{LP-Based Approximation}
+    \begin{itemize}
+        \justifying
+        \item Since one cannot completely characterize the performance space($\mathscr{C}$), we approximate $\mathscr{C}$ by a polyhedron $\mathscr{P}$ which is defined by valid inequalities for $\mathscr{C}$. Thus, $\pmb{\mathscr{C} \subseteq \mathscr{P}}$. We then solve the following LP relaxation:
+        \vspace{0.8cm}
+        \begin{equation}
+        \text{Minimize } \bigg\{\sum\limits_{j\in J} w_j E[C_j] \bigg\vert \text{ } C \in \mathscr{P} \bigg\}
+        \end{equation}
+        \vspace{0.8cm}
+        \item Let $C^{LP}=(C_1^{LP},\dots,C_n^{LP})$ be some optimal solution of (3).
+    \end{itemize}
+\end{frame}
+
+\section{LP-Based Approximation}
+\begin{frame}{LP-Based Approximation}
+    \begin{itemize}
+        \justifying
+        \item If the LP captures sufficient structure of the original problem, the ordering of jobs according to non-decreasing values of $C_j^{LP}$ is a promising candidate for an arbitrary priority policy $\Pi$ and also to a dual guarantee for the quality of the LP lower bound.
+        \vspace{0.2cm}
+        \item \textbf{Our goal} is to build a proper polyhedron $\pmb{\mathscr{P}}$ and prove the following performance guarantee of $\pmb{\alpha}$ for $\Pi$:
+        \vspace{0.2cm}
+        \begin{equation}
+            \sum\limits_{j\in J}w_jC_j^{LP} \leq Z^{OPT} \leq \sum\limits_{j\in J}w_jE[C_j^{\Pi}]
+        \end{equation}
+        \begin{equation}
+            \sum\limits_{j\in J}w_jE[C_j^{\Pi}] \leq \alpha Z^{OPT} 
+        \end{equation}
+        %\begin{equation}
+        %     \frac{1}{\alpha}Z^{OPT} \leq \sum\limits_{j\in J}w_jC_j^{LP}
+        %\end{equation}
+    \end{itemize}
+\end{frame}
+
+\section{Valid Inequalities for Stochastic Scheduling}
+\begin{frame}{Valid Inequalities for Stochastic Scheduling}
+    \begin{itemize}
+        \justifying    
+        \item[(a)] Shultz(1996) 
+        \item[] In \textbf{deterministic scheduling}, the following inequality is valid for any feasible schedule on $m$ machines:
+        \vspace{0.8cm}
+        \begin{equation}
+        \sum\limits_{j\in A}p_jC_j \geq \frac{1}{2m} \Bigg(  \sum\limits_{j\in A}p_j\Bigg)^2 + \frac{1}{2} \sum\limits_{j\in A}p_j^2 \qquad \text{for all } A \subseteq J.  
+        \end{equation}
+        \vspace{0.8cm}
+        \item Derived from the \textbf{Q-set constraint(Queyranne, 1993)}.
+    \end{itemize}
+\end{frame}
+
+\section{Valid Inequalities for Stochastic Scheduling}
+\begin{frame}{Valid Inequalities for Stochastic Scheduling}
+    \begin{itemize}
+        \justifying    
+        \item[(b)] Let $\Pi$ be any policy for \textbf{stochastic parallel machine scheduling}. Then the following inequalities are valid for the corresponding vector of expected completion times $E[\pmb{C}^\Pi]$ :
+        \vspace{0.4cm}
+        \begin{equation}
+        \begin{split}
+        \sum\limits_{j\in A}E[\pmb{p}_j]E[\pmb{C}_j^\Pi] \geq \frac{1}{2m} \Bigg(  \sum\limits_{j\in A}E[\pmb{p}_j]\Bigg)^2 + \frac{1}{2} \sum\limits_{j\in A}E[\pmb{p}_j]^2 
+        \\ - \frac{m-1}{2m}\sum\limits_{j\in A}Var[\pmb{p}_j] 
+        \qquad \text{for all } A \subseteq J. \end{split}
+        \end{equation}
+        \item Due to the \textbf{non-anticipative character} of policies and since processing times are independent, the random variables for the processing time($p_j$) and the start time($S_j^\Pi$) of any job $j$ are stochastically independent.
+    \end{itemize}
+\end{frame}
+
+\section{Valid Inequalities for Stochastic Scheduling}
+\begin{frame}{Valid Inequalities for Stochastic Scheduling}
+    \begin{itemize}
+        \justifying    
+        \item[(c)] With an additional assumption on the 2nd moments of all processing time distributions, we can rewrite (5):
+        \vspace{0.4cm}
+        \begin{equation}
+            \begin{split}
+            \sum\limits_{j\in A}E[\pmb{p}_j]E[\pmb{C}_j^\Pi] 
+            \geq \frac{1}{2m} \Bigg(\Bigg(  \sum\limits_{j\in A}E[\pmb{p}_j]\Bigg)^2 + \sum\limits_{j\in A}E[\pmb{p}_j]^2 \Bigg)
+            \\ - \frac{(m-1)(\Delta-1)}{2m}\sum\limits_{j\in A}E[\pmb{p}_j]^2
+            \qquad \text{for all } A \subseteq J. 
+            \end{split}
+        \end{equation}
+        \item[] Assuming $Var[\pmb{p}_j]/E[\pmb{p}_j]^2 \leq \Delta$, \quad for all $A \subseteq J$.
+        \vspace{0.8cm}
+        \item[(d)] Trivially,
+        \begin{equation}
+        E[\pmb{C}_j^{\Pi}]\geq r_j+E[\pmb{p}_j] \quad \text{for all } j \in J.
+        \end{equation}
+    \end{itemize}
+\end{frame}
+
+\section{Parallel Machine Scheduling with Release Dates}
+\begin{frame}{Parallel Machine Scheduling with Release Dates}
+    \begin{itemize}
+        \justifying
+        \item Lemma 4.1) Let $\Pi$ be a job-based priority policy that schedules the jobs in the order $1<\dots<n$. Then,
+        \vspace{0.6cm}
+        \begin{equation}
+        E[\pmb{C}_j^\Pi] \leq \max\limits_{k=1,\dots,j}r_k+\frac{1}{m}\Bigg( \sum\limits_{k=1}^{j-1}E[\pmb{p}_k] \Bigg)+E[\pmb{p}_j]
+        \quad \text{for all }j\in J.
+        \end{equation}
+        \vspace{0.6cm}
+        \item In the absence of release dates, $\max r_k=0$, and the claim also holds for ordinary priority policies.
+    \end{itemize}
+\end{frame}
+
+\section{Parallel Machine Scheduling with Release Dates}
+\begin{frame}{Parallel Machine Scheduling with Release Dates}
+    \begin{itemize}
+        \justifying
+        \item Lemma 4.2) Let $m \geq 1$ and $C\in \mathbb{R}^n$ be any point that satisfies $C_j \geq E[\pmb{p}_j]$ for all $j\in J$ as well as inequality (9) for some $\Delta \geq 0$. Assume $C_1\geq\dots\geq C_n$, then
+        \vspace{0.6cm}
+        \begin{equation}
+        \frac{1}{m}\sum\limits_{k=1}^{j}E[\pmb{p}_k]\leq
+        \Bigg( 1+\max \Bigg\{ 1,\frac{m-1}{m} \Delta \Bigg\} \Bigg) C_j \quad \text{for all }j\in J
+        \end{equation}
+        \vspace{0.6cm}
+        \item In the absence of release dates, $\max\limits_k (r_k)=0$, and the claim also holds for ordinary priority policies.
+    \end{itemize}
+\end{frame}
+
+\section{Parallel Machine Scheduling with Release Dates}
+\begin{frame}{Parallel Machine Scheduling with Release Dates}
+		\begin{equation*}
+		\begin{array}{lll}
+			\text{Minimize}& \sum\limits_{j} w_{j}C_j\\[8pt]
+            \text{subject to}
+            &\sum\limits_{j\in A}E[\pmb{p}_j]E[\pmb{C}_j^\Pi] 
+            \geq \dfrac{1}{2m} \Bigg(\Bigg(  \sum\limits_{j\in A}E[\pmb{p}_j]\Bigg)^2 + \sum\limits_{j\in A}E[\pmb{p}_j]^2 \Bigg)\\[20pt]
+            & \qquad\qquad\quad - \dfrac{(m-1)(\Delta-1)}{2m}\sum\limits_{j\in A}E[\pmb{p}_j]^2
+            \quad \text{for all } A \subseteq J. \\[30pt]
+			& E[\pmb{C}_j^{\Pi}]\geq r_j+E[\pmb{p}_j] \quad \text{for all } j \in J.\\[8pt]
+		\end{array}
+		\end{equation*}
+    \begin{itemize}
+        \justifying
+        \vspace{0.4cm}
+        \item Let $C^{LP}$ denote an optimum solution to this LP.
+    \end{itemize}        
+\end{frame}
+
+\section{Parallel Machine Scheduling with Release Dates}
+\begin{frame}{Parallel Machine Scheduling with Release Dates}
+    \begin{itemize}
+        \justifying
+        \item Theorem 4.1)
+        \item[] Let $Var[\pmb{p}_j]/E[\pmb{p}_j]^2 \leq \Delta$ for all jobs $j$ and some $\Delta \geq0$, and let $\Pi$ be the job-based priority policy corresponding to an optimal solution to the above LP relaxation. Then, $\Pi$ is a $\pmb{(3-(1/m)+\max\{1,((m-1)/m)\Delta\})}$-approximation.
+        \vspace{0.4cm}
+        \item Same guarantee can be applied to the without-release-date stochastic scheduling problem. However, we can have a better bound.
+        \vspace{3cm}
+    \end{itemize}
+\end{frame}
+
+
+\section{Parallel Machine Scheduling without Release Dates}
+\begin{frame}{Parallel Machine Scheduling without Release Dates}
+    \begin{itemize}
+        \justifying
+        \item Theorem 4.2)
+        \item[] Let $Var[\pmb{p}_j]/E[\pmb{p}_j]^2 \leq \Delta$ for all jobs $j$. Then the \textit{WSEPT} priority policy is a $\pmb{(1+((\Delta-1)(m-1)/2m)}$-approximation.
+        \vspace{5.4cm}
+    \end{itemize}
+\end{frame}
+
+\section{Parallel Machine Scheduling without Release Dates}
+\begin{frame}{Parallel Machine Scheduling without Release Dates}
+    \begin{itemize}
+        \justifying
+        \item Theorem 4.2)
+        \item[] Let $Var[\pmb{p}_j]/E[\pmb{p}_j]^2 \leq \Delta$ for all jobs $j$. Then the \textit{WSEPT} priority policy is a $\pmb{(1+((\Delta-1)(m-1)/2m)}$-approximation.
+        \vspace{0.8cm}
+    \end{itemize}
+		\begin{equation*}
+		\begin{array}{lll}
+			\text{Minimize}& \sum\limits_{j} w_{j}C_j\\[8pt]
+            \text{subject to}
+            &\sum\limits_{j\in A}E[\pmb{p}_j]E[\pmb{C}_j^\Pi] 
+            \geq \dfrac{1}{2m} \Bigg(\Bigg(  \sum\limits_{j\in A}E[\pmb{p}_j]\Bigg)^2 + \sum\limits_{j\in A}E[\pmb{p}_j]^2 \Bigg)\\[20pt]
+            & \qquad\qquad\quad - \dfrac{(m-1)(\Delta-1)}{2m}\sum\limits_{j\in A}E[\pmb{p}_j]^2
+            \quad \text{for all } A \subseteq J. \\[8pt]
+		\end{array}
+		\end{equation*}    
+        \vspace{1.3cm}    
+\end{frame}
+
+
+\end{document}
